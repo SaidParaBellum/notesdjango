@@ -77,7 +77,7 @@ class UpgradeUserAPIView(APIView):
     def put(self, request, pk, *args, **kwargs):
         try:
             user = User.objects.get(pk=pk)
-            admin_role = Role.objects.get(name='admin')
+            admin_role = Role.objects.get(name='Admin')
             user.role = admin_role
             user.save()
 

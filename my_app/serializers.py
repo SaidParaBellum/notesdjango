@@ -16,3 +16,13 @@ class NoteSerializer(serializers.ModelSerializer):
         }
 
 
+class NoteCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Note
+        fields = ['name', 'description']
+        extra_kwargs = {
+            'description': {
+                'write_only': True
+            }
+        }

@@ -1,11 +1,9 @@
-from django.contrib.auth.models import AbstractUser
 from django.db import models
-
-# Create your models here.
+from django.contrib.auth.models import AbstractUser
+from rest_framework import serializers
 
 class Role(models.Model):
-    name = models.CharField('Name', max_length=20)
-
+    name = models.CharField('Название', max_length=20)
 
     def __str__(self):
         return self.name
@@ -13,6 +11,8 @@ class Role(models.Model):
 class User(AbstractUser):
     avatars = models.ImageField(upload_to='avatars/', null=True, blank=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True)
-    date_of_birth = models.DateField('date_of_birth', null=True)
-    REQUIRED_FIELDS = []
+    date_of_birth = models.DateField('Дата рождения', null=True)
+
+    def __str__(self):
+        return self.username
 

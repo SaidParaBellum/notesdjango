@@ -1,13 +1,14 @@
 from rest_framework import serializers
 from django.shortcuts import render
-from rest_framework.generics import DestroyAPIView, UpdateAPIView
+from rest_framework.generics import DestroyAPIView, UpdateAPIView, ListAPIView
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from my_app.models import Note
-from my_app.serializers import NoteSerializer
+from my_app.serializers import NoteSerializer, NoteCreateSerializer
 
 
 # Create your views here.
@@ -39,17 +40,21 @@ class NoteView(APIView):
 
 class NotesCreateView(APIView):
     def post(self, request):
-        note_serializer = NoteSerializer(data =request.data)
+        note_serializer = NoteCreateSerializer(data=request.data)
         if note_serializer.is_valid():
-            note = Note.objects.create(**note_serializer.data)
-            note = NoteSerializer(note)
-            return Response(note.data)
-        return Response('Неверные данные для запроса', status=422)
+            note = note_serializer.save()
+            return Response(NoteSerializer(note).data)
+        return Response(note_serializer.errors, status=422)
 
-# class NoteListView(ListAPIView):
-#     queryset = Note.objects.all()
-#     serializer_class = NoteSerializer
 
+
+class NotePagination(PageNumberPagination):
+    page_size = 10
+
+class NoteListView(ListAPIView):
+    queryset = Note.objects.all()
+    serializer_class = NoteSerializer
+    pagination_class = NotePagination
 
 class NotesReadView(APIView):
     def get(self, request):
@@ -83,3 +88,4 @@ class MakeNoteDoneView(APIView):
         note.done = True
         note.save()
         return Response({'message': 'Note marked as done'})
+

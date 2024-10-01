@@ -3,9 +3,7 @@ from rest_framework import serializers as s
 
 from users.models import User, Role
 
-
 class UserSerializer(s.ModelSerializer):
-
 
     class Meta:
         model = User
@@ -17,10 +15,8 @@ class UserSerializer(s.ModelSerializer):
         }
 
     def create(self, validated_data):
-
         user = User(**validated_data)
-        user.set_password(validated_data['password'])
-        user.role = Role.objects.get(name='user')
+        user.set_password(validated_data['password'])  # Устанавливаем зашифрованный пароль
+        user.role = Role.objects.get(name='user')  # По умолчанию даём роль "user"
         user.save()
         return user
-
