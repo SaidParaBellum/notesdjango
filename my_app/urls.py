@@ -7,7 +7,8 @@ urlpatterns = [
     path('notes/', NoteView.as_view(), name='notes'),
     path('create', NotesCreateView.as_view(), name='create'),
     path('update/<int:pk>/', NotesUpdateView.as_view(), name='update'),
-    path('delete/<int:pk>/', NotesDeleteView.as_view(), name='delete'),
-    path('make_done/<int:pk>/', MakeNoteDoneView.as_view(), name='make_done')
+    path('delete/<int:id>/', NotesDeleteView.as_view(), name='delete'),
+    path('make_done/<int:pk>/', MakeNoteDoneView.as_view(), name='make_done'),
+
 
 ]

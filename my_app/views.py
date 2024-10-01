@@ -69,6 +69,12 @@ class NotesUpdateView(UpdateAPIView):
 
 class NotesDeleteView(DestroyAPIView):
     queryset = Note.objects.all()
+    serializer_class = NoteSerializer
+    lookup_field = 'id'
+    def delete(self, request, *args, **kwargs):
+        note = self.get_object()
+        note.delete()
+        return Response({'message': 'Заметка успешно удалена'}, status=204)
 
 
 class MakeNoteDoneView(APIView):

@@ -3,7 +3,7 @@ from rest_framework.generics import CreateAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from users.models import User
+from users.models import User, Role
 from users.serializers import UserSerializer
 
 
@@ -70,3 +70,19 @@ class GetUserAndNotesAPIView(APIView):
         user = request.user
         serializer = self.serializer_class(user)
         return Response(serializer.data)
+
+class UpgradeUserAPIView(APIView):
+    serializer_class = UserSerializer
+
+    def put(self, request, pk, *args, **kwargs):
+        try:
+            user = User.objects.get(pk=pk)
+            admin_role = Role.objects.get(name='admin')
+            user.role = admin_role
+            user.save()
+
+            return Response({'message': 'Роль пользователя успешно обновлена на Admin'}, status=200)
+        except User.DoesNotExist:
+            return Response({'error': 'Пользователь не найден'}, status=404)
+        except Role.DoesNotExist:
+            return Response({'error': 'Роль Admin не найдена'}, status=404)
